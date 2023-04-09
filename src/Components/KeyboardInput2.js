@@ -38,8 +38,13 @@ function KeyboardInput2 () {
                 || (k >= 112 && k <= 123) /* F1 - F12 */
                 || (k >= 144 && k <= 145 )) { /* Num Lock, Scroll Lock */
             }
+            // handle backspace key
             else if (k == 8){
                 setInputValue(prevValue => prevValue.slice(0, -1))
+            }
+            // handle enter key
+            else if (k == 13) {
+                setInputValue(prevValue => prevValue + '\r\n');
             }
             else if (pattern.test(key)){
                 setInputValue(prevValue=>prevValue + key);
