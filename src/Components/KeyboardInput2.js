@@ -18,7 +18,30 @@ function KeyboardInput2 () {
         function handleKeyDown(event) {
             console.log(event.key);
             const {key} = event;
-            setInputValue(prevValue=>prevValue + key);
+            const k = event.which;
+            console.log("k: "+k);
+            var pattern = /[A-Za-z]/;
+            // Verify that the key entered is not a special key
+            if (k == 20 /* Caps lock */
+                || k == 16 /* Shift */
+                || k == 8 /* Backspace */
+                || k == 46 /* Delete */
+                || k == 9 /* Tab */
+                || k == 27 /* Escape Key */
+                || k == 17 /* Control Key */
+                || k == 91 /* Windows Command Key */
+                || k == 19 /* Pause Break */
+                || k == 18 /* Alt Key */
+                || k == 93 /* Right Click Point Key */
+                || ( k >= 35 && k <= 40 ) /* Home, End, Arrow Keys */
+                || k == 45 /* Insert Key */
+                || ( k >= 33 && k <= 34 ) /*Page Down, Page Up */
+                || (k >= 112 && k <= 123) /* F1 - F12 */
+                || (k >= 144 && k <= 145 )) { /* Num Lock, Scroll Lock */
+            }
+            else if (pattern.test(key)){
+                setInputValue(prevValue=>prevValue + key);
+            }
         }
         // listen for keydown events on the entire document
         document.addEventListener('keydown',handleKeyDown);
