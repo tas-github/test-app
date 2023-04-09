@@ -24,7 +24,6 @@ function KeyboardInput2 () {
             // Verify that the key entered is not a special key
             if (k == 20 /* Caps lock */
                 || k == 16 /* Shift */
-                || k == 8 /* Backspace */
                 || k == 46 /* Delete */
                 || k == 9 /* Tab */
                 || k == 27 /* Escape Key */
@@ -38,6 +37,9 @@ function KeyboardInput2 () {
                 || ( k >= 33 && k <= 34 ) /*Page Down, Page Up */
                 || (k >= 112 && k <= 123) /* F1 - F12 */
                 || (k >= 144 && k <= 145 )) { /* Num Lock, Scroll Lock */
+            }
+            else if (k == 8){
+                setInputValue(prevValue => prevValue.slice(0, -1))
             }
             else if (pattern.test(key)){
                 setInputValue(prevValue=>prevValue + key);
