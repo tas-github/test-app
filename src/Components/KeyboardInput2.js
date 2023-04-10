@@ -16,6 +16,12 @@ function KeyboardInput2 () {
     useEffect ( () => {
         // how to handle the keydown event
         function handleKeyDown(event) {
+            if (inputValue.length >= 6){
+                console.log("Max length reached: "+inputValue.length);
+                // exit
+                return true;
+            }
+            // get current inputValue
             console.log(event.key);
             const {key} = event;
             const k = event.which;
@@ -49,7 +55,9 @@ function KeyboardInput2 () {
             else if (pattern.test(key)){
                 setInputValue(prevValue=>prevValue + key);
             }
+            console.log("inputValue: " + inputValue);
         }
+        
         // listen for keydown events on the entire document
         document.addEventListener('keydown',handleKeyDown);
 
@@ -57,7 +65,7 @@ function KeyboardInput2 () {
         return function cleanup () {
             document.removeEventListener('keydown', handleKeyDown);
         }
-    }, []);
+    }, [inputValue]);
 
     return (
         <div>
