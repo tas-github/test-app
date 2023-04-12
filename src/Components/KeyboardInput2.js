@@ -9,7 +9,11 @@ function KeyboardInput2 () {
     // set a state variable and it's value setter function with the useState hook
     // set the initial value of the state variable to ""
     const[inputValue, setInputValue] = useState("");
-    const[wordArray, setWordArray] = useState([]);
+    const MAX_LENGTH = 9;
+    const WORD_LENGTH = 7;
+    const START_POS = Math.floor(MAX_LENGTH/2);
+    const[wordArray, setWordArray] = useState(["*","*","*","*","*","*","*","*","*"]);
+    const[cursorPos, setCursorPos] = useState(START_POS);
 
     // the useEffect hook is a lifecycle hook that handles actions when the
     // component is mounted - (is rendered)
@@ -20,23 +24,15 @@ function KeyboardInput2 () {
             // get current inputValue
             const {key} = event;
             const k = event.which;
-            /*
-            console.log(event.key);
-            console.log("k: "+k);
-            */
+            
             var pattern = /[A-Za-z]/;
             // handle backspace key
             if (k === 8){
                 setInputValue(prevValue => prevValue.slice(0, -1));
-                setWordArray(wArray => wArray.slice(0, -1));
+                setCursorPos(cPos => cPos-1);
+                setWordArray(wArray => wArray[cursorPos] = '');
             }
-            else if (inputValue.length >= 6){
-                console.log("Max length reached: "+inputValue.length);
-                console.log("inputValue: " + inputValue);
-                console.log("inputValue.length: " + inputValue.length);
-                
-                console.log("wordArray: " + wordArray);
-                console.log("wordArray.length: " + wordArray.length);
+            else if (inputValue.length >= WORD_LENGTH){
                 // exit
                 return true;
             }
@@ -62,17 +58,30 @@ function KeyboardInput2 () {
                 setInputValue(prevValue => prevValue + '\r\n');
             }
             else if (pattern.test(key)){
-                setInputValue(prevValue => prevValue + key);
-                setWordArray(wArray => wArray.concat(key));
+                setInputValue(inputValue => inputValue + key);
+                setCursorPos(cursorPos => {
+                    if (inputValue.length%2 == 0){
+                       return cursorPos+1;
+                    } 
+                    else {
+                        return cursorPos;
+                    }
+                });
+                setWordArray( wordArray => {
+                    wordArray[cursorPos] = key;
+                    if (inputValue.length%2 == 1){
+                        wordArray.push("*");
+                        return wordArray.slice(1,MAX_LENGTH+1);
+                    }
+                    else {
+                        return wordArray;
+                    }
+                });
             }
-            console.log("inputValue: " + inputValue);
-            console.log("inputValue length: " + inputValue.length);
-            
-            console.log("wordArray:" + wordArray);
-            console.log("wordArray.length:" + wordArray.length);
-
         }
-        
+        console.log("inputValue updated: " + inputValue);
+        console.log("cursorPos updated: " + cursorPos);
+        console.log("wordArray updated: " + wordArray);
         // listen for keydown events on the entire document
         document.addEventListener('keydown',handleKeyDown);
 
@@ -80,12 +89,21 @@ function KeyboardInput2 () {
         return function cleanup () {
             document.removeEventListener('keydown', handleKeyDown);
         }
-    }, [inputValue, wordArray]);
+    }, [inputValue, wordArray, cursorPos]);
 
     return (
         <div>
             <h2>Type something on your keyboard:</h2>
             <p>You typed: {inputValue}</p>
+            <div className="word-list">
+                {wordArray.map((letter, index) => {
+                    return (
+                    <div className="word-item" key={index}>
+                        {letter}
+                    </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }
