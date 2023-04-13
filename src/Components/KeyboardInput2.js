@@ -28,9 +28,32 @@ function KeyboardInput2 () {
             var pattern = /[A-Za-z]/;
             // handle backspace key
             if (k === 8){
-                setInputValue(prevValue => prevValue.slice(0, -1));
-                setCursorPos(cPos => cPos-1);
-                setWordArray(wArray => wArray[cursorPos] = '');
+                var newInputValue = inputValue.slice(0, -1);
+                setInputValue(inputValue => {return newInputValue;});
+                var inputLength = newInputValue.length;
+                var startPos = Math.floor((MAX_LENGTH - inputLength)/2);
+                var i=0;
+                var x=0;
+                setWordArray( wordArray => {
+                    while (i<startPos){
+                        wordArray[i] = "*";
+                        i++;
+                    }
+                    while (i>=startPos && x<inputLength){
+                        wordArray[i] = newInputValue[x];
+                        i++;
+                        x++;
+                    }
+                    while (i>=inputLength && i < MAX_LENGTH){
+                        wordArray[i] = "*";
+                        i++;
+                    }
+                    return wordArray;
+                });
+                setCursorPos(cursorPos => { 
+                    var cPos = MAX_LENGTH-1 - Math.floor((MAX_LENGTH - inputLength)/2);
+                    return cPos;
+                });
             }
             else if (inputValue.length >= WORD_LENGTH){
                 // exit
